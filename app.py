@@ -36,17 +36,28 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- 2. Инициализация Firebase ---
-KEY_PATH = "serviceAccountKey.json"
+# --- Инициализация Firebase (Умная версия для Cloud и Локалки) ---
+import json # <--- Добавь эту строку в самые верхние импорты, если её там нет!
 
 if not firebase_admin._apps:
-    if not os.path.exists(KEY_PATH):
-        st.error("❌ Ошибка: Файл serviceAccountKey.json не найден в папке проекта!")
+    # 1. Пытаемся взять ключ из Secrets (для Streamlit Cloud)
+    key_content = os.getenv("FIREBASE_KEY") 
+    
+    if key_content:
+        # Если ключ есть в настройках облака, превращаем текст в объект
+        cred_dict = json.loads(key_content)
+        cred = credentials.Certificate(cred_dict)
+        
+    # 2. Если ключа в облаке нет, пытаемся найти файл (для локального запуска)
+    elif os.path.exists("serviceAccountKey.json"):
+        cred = credentials.Certificate("serviceAccountKey.json")
+        
+    # 3. Если ничего не нашли — выдаем ошибку
+    else:
+        st.error("❌ Ошибка: Ключ Firebase не найден ни в Secrets, ни в файле!")
         st.stop()
-    cred = credentials.Certificate(KEY_PATH)
+        
     firebase_admin.initialize_app(cred)
-
-db = firestore.client()
 
 # --- 3. Интерфейс приложения ---
 st.set_page_config(page_title="Опрос: Сон и Продуктивность", layout="wide")
