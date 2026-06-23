@@ -59,6 +59,8 @@ if not firebase_admin._apps:
         
     firebase_admin.initialize_app(cred)
 
+db = firestore.client()
+
 # --- 3. Интерфейс приложения ---
 st.set_page_config(page_title="Опрос: Сон и Продуктивность", layout="wide")
 st.title("😴 Исследование: Влияние сна на успеваемость")
