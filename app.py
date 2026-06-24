@@ -6,7 +6,7 @@ import plotly.express as px
 from datetime import datetime
 import os
 
-# --- 1. Настройка нежно-розового дизайна ---
+# 1. Настройка нежно-розового дизайна
 st.markdown(
     """
     <style>
@@ -36,8 +36,8 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- Инициализация Firebase (Умная версия для Cloud и Локалки) ---
-import json # <--- Добавь эту строку в самые верхние импорты, если её там нет!
+# Инициализация Firebase 
+import json 
 
 if not firebase_admin._apps:
     # 1. Пытаемся взять ключ из Secrets (для Streamlit Cloud)
@@ -61,7 +61,7 @@ if not firebase_admin._apps:
 
 db = firestore.client()
 
-# --- 3. Интерфейс приложения ---
+# 3. Интерфейс приложения 
 st.set_page_config(page_title="Опрос: Сон и Продуктивность", layout="wide")
 st.title("😴 Исследование: Влияние сна на успеваемость")
 st.markdown("""
@@ -146,7 +146,7 @@ if submitted:
     except Exception as e:
         st.error(f"Ошибка при сохранении: {e}")
 
-# --- 5. Аналитика ---
+# 5. Аналитика
 if st.checkbox("📊 Показать панель аналитики (для преподавателя)"):
     docs = db.collection("responses").stream()
     data = [doc.to_dict() for doc in docs]
